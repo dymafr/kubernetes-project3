@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-nginx-deployment
+  labels:
+    app: php-nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: php-nginx
+  template:
+    metadata:
+      labels:
+        app: php-nginx
+    spec:
+      initContainers:
+        - name: init-mysql
+          image: dymafr/projet3-php-fpm
+          command: 
+            - 'sh'
+            - '-c'
+            - |
+              until nc -z mysql-service 3306; 
+              do 
+                echo "waiting for mysql"; 
+                sleep 2; 
+              done;
+              echo "mysql is ready";
+              php /app/data/seed-articles.php
+              echo "seed script executed";
+      containers:
+        - name: php-fpm
+          image: dymafr/projet3-php-fpm
+        - name: nginx
+          image: dymafr/projet3-nginx
+          ports:
+            - containerPort: 80

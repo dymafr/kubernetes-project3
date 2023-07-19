@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+ name: php-blog
+spec:
+ selector:
+   matchLabels:
+     app: php-blog
+     tier: database
+ serviceName: mysql-service
+ replicas: 1
+ template:
+   metadata:
+     labels:
+       app: php-blog
+       tier: database
+   spec:
+     terminationGracePeriodSeconds: 10
+     containers:
+     - name: db
+       image: mysql:8
+       ports:
+       - containerPort: 3306
+       env:
+       - name: MYSQL_ROOT_PASSWORD
+         value: Pomme123;
+       - name: MYSQL_DATABASE
+         value: "blog"
+       volumeMounts:
+       - mountPath: /var/lib/mysql
+         name: php-blog-volume
+ volumeClaimTemplates:
+ - metadata:
+     name: php-blog-volume
+   spec:
+     accessModes: [ "ReadWriteOnce" ]
+     resources:
+       requests:
+         storage: 1Gi

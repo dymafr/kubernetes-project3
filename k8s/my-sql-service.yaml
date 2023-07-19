@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+ name: mysql-service
+ labels:
+   app: php-blog
+   tier: database
+spec:
+ type: ClusterIP
+ selector:
+    app: php-blog
+    tier: database
+ ports:
+   - port: 3306
+     protocol: TCP
+ clusterIP: "None"
