@@ -14,9 +14,6 @@ spec:
       labels:
         app: php-nginx
     spec:
-      volumes:
-        - name: shared-code
-          emptyDir: {}
       initContainers:
         - name: init-mysql
           image: dymafr/projet3-php-fpm
@@ -32,11 +29,8 @@ spec:
               echo "mysql is ready";
               php /app/data/seed-articles.php
               echo "seed script executed";
-              cp -r /app/* /var/www/
+              cp -r /app/public /var/www/public
               echo "copy code done";
-          volumeMounts:
-            - name: shared-code
-              mountPath: /var/www
       containers:
         - name: php-fpm
           image: dymafr/projet3-php-fpm
@@ -44,6 +38,3 @@ spec:
           image: dymafr/projet3-nginx
           ports:
             - containerPort: 80
-          volumeMounts:
-            - name: shared-code
-              mountPath: /var/www
