@@ -27,7 +27,7 @@ spec:
                 sleep 2; 
               done;
               echo "mysql is ready";
-              php /app/data/seed-articles.php
+              php /app/data/migration.php
               echo "seed script executed";
               cp -r /app/public /var/www/public
               echo "copy code done";
