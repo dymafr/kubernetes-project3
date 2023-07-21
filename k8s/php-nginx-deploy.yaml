@@ -3,16 +3,22 @@ kind: Deployment
 metadata:
   name: php-nginx-deployment
   labels:
-    app: php-nginx
+    app.kubernetes.io/name: php-nginx
+    app.kubernetes.io/component: server
+    app.kubernetes.io/part-of: php-blog
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: php-nginx
+      app.kubernetes.io/name: php-nginx
+      app.kubernetes.io/component: server
+      app.kubernetes.io/part-of: php-blog
   template:
     metadata:
       labels:
-        app: php-nginx
+        app.kubernetes.io/name: php-nginx
+        app.kubernetes.io/component: server
+        app.kubernetes.io/part-of: php-blog
     spec:
       initContainers:
         - name: init-mysql
@@ -29,11 +35,11 @@ spec:
               echo "mysql is ready";
               php /app/data/migration.php
               echo "seed script executed";
-              cp -r /app/public /var/www/public
-              echo "copy code done";
       containers:
         - name: php-fpm
           image: dymafr/projet3-php-fpm
+          ports:
+            - containerPort: 9000
         - name: nginx
           image: dymafr/projet3-nginx
           ports:
